@@ -1,5 +1,7 @@
 module Svg
 
+open FSharpPlus
+
 open Bolero
 open Bolero.Html
 
@@ -35,7 +37,7 @@ let inline lineVertivalTo y t =
     | Relative -> "v "
   t + string y + " "
 
-let lineClose = "Z"
+let [<Literal>] LineClose = "Z"
 
 let bezier2 (a1, a2) x y t =
   let t =
@@ -80,3 +82,35 @@ let circle attrs cx cy r =
                   "cy" => cy
                   "r" => r ] attrs
   elt "circle" attrs []
+
+let rect attrs x y width height =
+  let attrs = 
+    List.append [ "x" => x 
+                  "y" => y
+                  "width" => width
+                  "height" => height ] attrs
+  elt "rect" attrs []
+
+let line attrs x1 y1 x2 y2 =
+  let attrs =
+    List.append [ "x1" => x1
+                  "y1" => y1
+                  "x2" => x2
+                  "y2" => y2 ] attrs
+  elt "line" attrs []
+
+let polygon attrs plst =
+  let inline f (a: float, b: float) = string a + "," + string b
+  let plst = List.map f plst
+  let attrs =
+    List.append [ "points" => String.concat " " plst ] attrs
+  elt "polygon" attrs []
+
+let inline group attr nodes =
+  elt "g" attr nodes
+
+let inline defs attr nodes =
+  elt "defs" attr nodes
+
+let inline filter attr nodes =
+  elt "filter" attr nodes
